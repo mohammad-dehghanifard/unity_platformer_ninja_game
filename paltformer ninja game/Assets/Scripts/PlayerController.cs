@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    public static PlayerController instance;
+
     // movement variables
     [Range(5f,30f)]
     public float moveSpeed;
@@ -22,12 +24,20 @@ public class PlayerController : MonoBehaviour
     // amimation variables
     private Animator anim;
 
+    // health variables
+    public int currentHealth,maxHealth;
+
+
+    private void Awake()
+    {
+        instance = this;
+    }
+
     void Start()
     {
        Init();
     }
 
-    // Update is called once per frame
     void Update()
     {
         PlayerHorizontalMove();
@@ -35,6 +45,7 @@ public class PlayerController : MonoBehaviour
         ChangeDirection();
     }
 
+    // init components
     private void Init()
     {
         rd = GetComponent<Rigidbody2D>();
@@ -42,6 +53,7 @@ public class PlayerController : MonoBehaviour
         anim = GetComponent<Animator>();
     }
 
+    #region player movement functions
     private void PlayerHorizontalMove()
     {
         direction = Input.GetAxis("Horizontal");
@@ -69,6 +81,18 @@ public class PlayerController : MonoBehaviour
         else if(rd.velocity.x > 0)
         {
             sr.flipX = false;
+        }
+    }
+    #endregion
+
+    // decrease palyer dmage
+    public void DecreaseDamage(int damage)
+    {
+        currentHealth -= damage;
+
+        if(currentHealth <=0)
+        {
+            gameObject.SetActive(false);  
         }
     }
 }
