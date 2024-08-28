@@ -25,7 +25,11 @@ public class PlayerController : MonoBehaviour
     private Animator anim;
 
     // health variables
-    public int currentHealth,maxHealth;
+    private int currentHealth;
+    public int maxHealth;
+    public HealthBarController healthBarController;
+    public float imortalTime;
+    private float imortalCounter;
 
 
     private void Awake()
@@ -43,6 +47,7 @@ public class PlayerController : MonoBehaviour
         PlayerHorizontalMove();
         Playerjump();
         ChangeDirection();
+        ImortalDecrease();
     }
 
     // init components
@@ -51,6 +56,9 @@ public class PlayerController : MonoBehaviour
         rd = GetComponent<Rigidbody2D>();
         sr = GetComponent<SpriteRenderer>();
         anim = GetComponent<Animator>();
+
+        currentHealth = maxHealth;
+        healthBarController.SetMaxHealth(currentHealth);
     }
 
     #region player movement functions
@@ -88,11 +96,33 @@ public class PlayerController : MonoBehaviour
     // decrease palyer dmage
     public void DecreaseDamage(int damage)
     {
-        currentHealth -= damage;
-
-        if(currentHealth <=0)
+        if(imortalCounter <= 0)
         {
-            gameObject.SetActive(false);  
+            currentHealth -= damage;
+            healthBarController.SetHealth(currentHealth);
+
+            if (currentHealth <= 0)
+            {
+                gameObject.SetActive(false);
+            }
+            else
+            {
+                imortalCounter = imortalTime;
+                sr.color = new Color(sr.color.r,sr.color.g,sr.color.b,0.5f);
+            }
+        }
+    }
+
+    private void ImortalDecrease()
+    {
+        if(imortalCounter > 0)
+        {
+            imortalCounter -= Time.deltaTime;
+
+            if(imortalCounter <= 0)
+            {
+                sr.color = new Color(sr.color.r, sr.color.g, sr.color.b,1f);
+            }
         }
     }
 }
