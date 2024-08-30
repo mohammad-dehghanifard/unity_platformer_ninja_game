@@ -31,6 +31,9 @@ public class PlayerController : MonoBehaviour
     public float imortalTime;
     private float imortalCounter;
 
+    // respwan variable
+    private Vector2 checkPoint;
+
 
     private void Awake()
     {
@@ -57,8 +60,8 @@ public class PlayerController : MonoBehaviour
         sr = GetComponent<SpriteRenderer>();
         anim = GetComponent<Animator>();
 
-        currentHealth = maxHealth;
-        healthBarController.SetMaxHealth(currentHealth);
+        SetPlayerHealth();
+        checkPoint = transform.position;
     }
 
     #region player movement functions
@@ -103,7 +106,7 @@ public class PlayerController : MonoBehaviour
 
             if (currentHealth <= 0)
             {
-                gameObject.SetActive(false);
+                PlayerDie();
             }
             else
             {
@@ -125,4 +128,19 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
+
+    private void SetPlayerHealth()
+    {
+        currentHealth = maxHealth;
+        healthBarController.SetMaxHealth(currentHealth);
+    }
+
+    private void PlayerDie()
+    {
+        SetPlayerHealth();  
+        transform.position = checkPoint;
+    }
+
+    public void UpdateCheckPoint(Vector2 newCheckPoint) => checkPoint = newCheckPoint;
+  
 }
