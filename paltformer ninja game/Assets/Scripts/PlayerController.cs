@@ -34,6 +34,9 @@ public class PlayerController : MonoBehaviour
     // respwan variable
     private Vector2 checkPoint;
 
+    // pause menu
+    public GameObject pauseMenu;
+    public bool isPause = false;
 
     private void Awake()
     {
@@ -43,6 +46,7 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
        Init();
+        
     }
 
     void Update()
@@ -51,6 +55,8 @@ public class PlayerController : MonoBehaviour
         Playerjump();
         ChangeDirection();
         ImortalDecrease();
+        ActivePauseMenu();
+        
     }
 
     // init components
@@ -79,6 +85,7 @@ public class PlayerController : MonoBehaviour
         if (Input.GetButtonDown("Jump") && isGround)
         {
             rd.velocity = new Vector2(rd.velocity.x, jumpForce);
+            AudioController.instance.PlayAudio(1);
         }
         anim.SetBool("isGrounded",isGround);
     }
@@ -102,6 +109,7 @@ public class PlayerController : MonoBehaviour
         if(imortalCounter <= 0)
         {
             currentHealth -= damage;
+            AudioController.instance.PlayAudio(2);
             healthBarController.SetHealth(currentHealth);
 
             if (currentHealth <= 0)
@@ -142,5 +150,25 @@ public class PlayerController : MonoBehaviour
     }
 
     public void UpdateCheckPoint(Vector2 newCheckPoint) => checkPoint = newCheckPoint;
+
+    private void ActivePauseMenu()
+    {
+
+        if(Input.GetKeyDown(KeyCode.Escape))
+        {
+            isPause = !isPause;
+        }
+
+        if(isPause)
+        {
+            pauseMenu.SetActive(true);
+            Time.timeScale = 0;
+        }
+        else
+        {
+            pauseMenu.SetActive(false);
+            Time.timeScale = 1;
+        }
+    }
   
 }

@@ -21,6 +21,7 @@ public class ScoreController : MonoBehaviour
         if(collision.CompareTag("Gem"))
         {
             Destroy(collision.gameObject);
+            AudioController.instance.PlayAudio(0);
             score++;
             PlayerPrefs.SetInt("PlayerScore", score);
             scoreText.text = "Score : " + score.ToString();  
